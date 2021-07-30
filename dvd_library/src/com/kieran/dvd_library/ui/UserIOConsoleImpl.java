@@ -13,13 +13,11 @@ public class UserIOConsoleImpl implements UserIO {
     /**
      * Displays a message
      * @param msg The message to display, msg MUST be a valid String object
-     * @return The displayed message
      * @throws UserIOException thrown when an error occurs when displaying the message
      */
     @Override
-    public String displayMessage(String msg) throws UserIOException {
+    public void displayMessage(String msg) throws UserIOException {
         System.out.println(msg);
-        return msg;
     }
     /**
      * Stalls the application until an input string has been received.

@@ -12,10 +12,9 @@ public interface UserIO {
     /**
      * Displays a message
      * @param msg The message to display, msg MUST be a valid String object
-     * @return The displayed message
      * @throws UserIOException thrown when an error occurs when displaying the message
      */
-    String displayMessage(String msg) throws UserIOException;
+    void displayMessage(String msg) throws UserIOException;
 
     /**
      * Stalls the application until an input string has been received.
