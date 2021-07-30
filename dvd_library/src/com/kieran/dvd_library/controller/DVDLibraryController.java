@@ -33,10 +33,9 @@ public class DVDLibraryController {
 
     /**
      * Runs the DVDLibrary application
-     * @throws UserIOException thrown when the application encounters unknown or invalid user input
      * @throws ControllerException thrown when the controller encounters unexpected behavior
      */
-    public void run() throws UserIOException, ControllerException {
+    public void run() throws ControllerException {
         // Populate the controller's DAO
         if(!this.dao.load()) {
             throw new ControllerException("Failed to load DAO");
@@ -66,6 +65,8 @@ public class DVDLibraryController {
                 case EXIT:
                     finished = true;
                     break;
+                case NOOP:
+                    break;
                 default:
                     // Throw an exception upon unimplemented menu selections
                     throw new UnsupportedOperationException("Unrecognized command");
@@ -81,61 +82,97 @@ public class DVDLibraryController {
     /**
      * Process the ADD menu selection.
      * This function will stall the application until it receives input
-     * @throws UserIOException thrown when the user's provided input is invalid
      */
-    private void awaitInputAddDvd() throws UserIOException {
-        DVD target = view.awaitInputCreateDvd();
-        dao.addDvd(target);
+    private void awaitInputAddDvd() {
+        try {
+            DVD target = view.awaitInputCreateDvd();
+            dao.addDvd(target);
+        }
+        catch(UserIOException e) {
+            view.displayErrorMessage(e.getMessage());
+        }
     }
 
     /**
      * Process the REMOVE menu selection.
      * This function will stall the application until it receives input
-     * @throws UserIOException thrown when the user's provided input is invalid
      */
-    private void awaitInputRemoveDvd() throws UserIOException {
-        String dvdTitle = view.awaitInputGetDvdTitle();
-        dao.removeDvd(dvdTitle);
+    private void awaitInputRemoveDvd() {
+        try {
+            String dvdTitle = view.awaitInputGetDvdTitle();
+            if(!dao.removeDvd(dvdTitle)) {
+                throw new UserIOException("Failed to remove " + dvdTitle + ": DVD does not exist in storage");
+            }
+        }
+        catch(UserIOException e) {
+            view.displayErrorMessage(e.getMessage());
+        }
     }
 
     /**
      * Process the EDIT menu selection.
      * This function will stall the application until it receives input
-     * @throws UserIOException thrown when the user's provided input is invalid
      */
-    private void awaitInputEditDvd() throws UserIOException {
-        String title = view.awaitInputGetDvdTitle();
-        DVD target = dao.getDvdInfo(title);
-        view.awaitInputEditDvd(target);
+    private void awaitInputEditDvd() {
+        DVD target;
+        try {
+            String title = view.awaitInputGetDvdTitle();
+            target = dao.getDvdInfo(title);
+            view.awaitInputEditDvd(target);
+            dao.removeDvd(title);
+            dao.addDvd(target);
+        }
+        catch (UserIOException e) {
+            view.displayErrorMessage(e.getMessage());
+        }
     }
 
     /**
      * Process the LIST_ALL menu selection.
      * This function will stall the application until it receives input
-     * @throws UserIOException thrown when the user's provided input is invalid
      */
-    private void awaitInputListDvds() throws UserIOException {
+    private void awaitInputListDvds() {
         Collection<DVD> dvds = dao.getAllDvds();
-        view.displayDvdCollection(dvds);
+        if(dvds != null) {
+            try {
+                view.displayDvdCollection(dvds);
+            }
+            catch(UserIOException e) {
+                view.displayErrorMessage(e.getMessage());
+            }
+        }
+        else {
+            view.displayErrorMessage("No DVDs in the library");
+        }
     }
 
     /**
      * Process the GET menu selection.
      * This function will stall the application until it receives input
-     * @throws UserIOException thrown when the user's provided input is invalid
      */
-    private void awaitInputGetDvdInfo() throws UserIOException {
-        String title = view.awaitInputGetDvdTitle();
-        DVD target = dao.getDvdInfo(title);
-        view.displayDvd(target);
+    private void awaitInputGetDvdInfo() {
+        DVD target;
+        try {
+            String title = view.awaitInputGetDvdTitle();
+            target = dao.getDvdInfo(title);
+            view.displayDvd(target);
+        }
+        catch(UserIOException e) {
+            view.displayErrorMessage(e.getMessage());
+        }
     }
 
     /**
      * Retrieves the user's input menu selection
      * @return An enumerated value representing the user's selection
-     * @throws UserIOException thrown when the user's input is invalid
      */
-    private EMenuSelection awaitInputGetMenuSelection() throws UserIOException {
-        return view.awaitInputGetMenuSelection();
+    private EMenuSelection awaitInputGetMenuSelection() {
+        try {
+            return view.awaitInputGetMenuSelection();
+        }
+        catch(UserIOException e) {
+            view.displayErrorMessage(e.getMessage());
+            return EMenuSelection.NOOP;
+        }
     }
 }

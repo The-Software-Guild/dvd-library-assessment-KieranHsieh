@@ -42,19 +42,30 @@ public class DVDLibraryStorage implements Iterable<DVD> {
     }
 
     /**
+     * Checks if the storage is empty
+     * @return True if the storage contains no elements, and false otherwise
+     */
+    public boolean isEmpty() {
+        return library.isEmpty();
+    }
+
+    /**
      * Adds a DVD to the storage
      * @param dvd The DVD to add
      */
     public void addDvd(DVD dvd) {
-        library.put(dvd.getTitle(), dvd);
+        if(dvd != null) {
+            library.put(dvd.getTitle(), dvd);
+        }
     }
 
     /**
      * Removes a DVD from storage
      * @param title The Title of the DVD to remove
+     * @return If the title was present in the storage
      */
-    public void removeDvd(String title) {
-        library.remove(title);
+    public boolean removeDvd(String title) {
+        return library.remove(title) != null;
     }
 
     /**

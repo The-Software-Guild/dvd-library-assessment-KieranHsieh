@@ -46,8 +46,8 @@ public abstract class DVDLibraryDao {
      * Removes a DVD from the DAO
      * @param title The title of the DVD to add
      */
-    public void removeDvd(String title) {
-        storage.removeDvd(title);
+    public boolean removeDvd(String title) {
+        return storage.removeDvd(title);
     }
 
     /**
@@ -65,5 +65,13 @@ public abstract class DVDLibraryDao {
      */
     public Collection<DVD> getAllDvds() {
         return storage.getAllDvds();
+    }
+
+    /**
+     * Checks if there are no DVDs in the DAO's storage
+     * @return True if there are no DVDs in the DAO, and false otherwise
+     */
+    public boolean isEmpty() {
+        return storage.isEmpty();
     }
 }

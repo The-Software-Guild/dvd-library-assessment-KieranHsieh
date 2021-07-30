@@ -194,6 +194,6 @@ public class DVD {
     @Override
     public String toString() {
         return String.format(getFormatString(),
-                this.title, this.releaseDate, this.mpaaRating, this.studio, this.directorName, this.userRatingAndNote);
+                this.title, this.releaseDate, this.mpaaRating, this.directorName, this.studio, this.userRatingAndNote);
     }
 }

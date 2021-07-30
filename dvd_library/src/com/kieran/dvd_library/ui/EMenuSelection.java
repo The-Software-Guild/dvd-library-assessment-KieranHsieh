@@ -15,5 +15,7 @@ public enum EMenuSelection {
     /** Retrieve a specific DVD by title */
     GET,
     /** Exit the application */
-    EXIT
+    EXIT,
+    /** A noop selection */
+    NOOP,
 }

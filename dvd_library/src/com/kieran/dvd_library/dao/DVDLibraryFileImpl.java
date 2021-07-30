@@ -139,6 +139,15 @@ public class DVDLibraryFileImpl extends DVDLibraryDao {
         // Try to open the file
         Scanner fileReader;
         try {
+            File outFile = new File(outputFile);
+            if(outFile.isDirectory()) {
+                throw new IOException("Invalid file name: File must be a writable file");
+            }
+            if(!outFile.exists()) {
+                FileWriter writer = new FileWriter(outputFile);
+                writer.flush();
+                writer.close();
+            }
             fileReader = new Scanner(new BufferedReader(new FileReader(outputFile)));
         }
         catch(IOException e) {

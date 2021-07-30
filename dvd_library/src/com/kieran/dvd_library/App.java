@@ -18,13 +18,12 @@ public class App {
     /**
      * The entry point for the DVD Library application
      * @param args The command line arguments passed in with the application. This value is ignored
-     * @throws UserIOException thrown when invalid user input is detected or an error occurs when displaying output
      * @throws ControllerException thrown when the controller encounters an error
      */
-    public static void main(String[] args) throws UserIOException, ControllerException {
+    public static void main(String[] args) throws ControllerException {
         // Initialize dependencies
         UserIO io = new UserIOConsoleImpl();
-        DVDLibraryDao dao = new DVDLibraryFileImpl(new DVDLibraryStorage(), "Test.txt");
+        DVDLibraryDao dao = new DVDLibraryFileImpl(new DVDLibraryStorage(), "DVDLibrary.txt");
 
         // Initialize the application view
         DVDLibraryView view = new DVDLibraryView(io);

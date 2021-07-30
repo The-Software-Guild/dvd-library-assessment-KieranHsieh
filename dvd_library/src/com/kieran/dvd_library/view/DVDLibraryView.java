@@ -29,11 +29,25 @@ public class DVDLibraryView {
     }
 
     /**
-     * Displays information about a DVD
+     * Displays an error message
+     * @param msg The message to display
+     */
+    public void displayErrorMessage(String msg) {
+        try {
+            userIO.displayMessage(msg);
+        }
+        catch(UserIOException ignored) { }
+    }
+    /**
+     * Displays information about a DVD, or an error message if the DVD could not be found
      * @param dvd The DVD to display information for
      * @throws UserIOException thrown when something goes wrong displaying output
      */
     public void displayDvd(DVD dvd) throws UserIOException {
+        if(dvd == null) {
+            userIO.displayMessage("DVD could not be found!");
+            return;
+        }
         String outMsg = String.format(DVD.getFormatString(),
                 "Title", "Release Date", "MPAA Rating", "Director", "Studio", "User Rating/Note") +
                 "\n" +
@@ -105,7 +119,11 @@ public class DVDLibraryView {
                 "Add a DVD", "Remove a DVD", "Edit a DVD", "List all DVDs", "Find DVD", "Exit");
         userIO.displayMessage(menuMsg);
         try {
-            return SELECTION_VALUES[userIO.getInputNumber(null).intValue() - 1];
+            int selection = userIO.getInputNumber(null).intValue();
+            if(selection > 6 || selection < 1) {
+                throw new ArrayIndexOutOfBoundsException("Invalid menu selection. Select a number in the range [1, 6]");
+            }
+            return SELECTION_VALUES[selection - 1];
         }
         catch(ArrayIndexOutOfBoundsException e) {
             throw new UserIOException(e.getMessage());
@@ -118,6 +136,10 @@ public class DVDLibraryView {
      * @throws UserIOException thrown when something goes wrong displaying output or retrieving user input
      */
     private void awaitInputUpdateDvdValues(DVD dvd) throws UserIOException {
+        if(dvd == null) {
+            displayErrorMessage("DVD not found");
+            return;
+        }
         dvd.setTitle(userIO.getInputString("Enter the title of the DVD: "));
         dvd.setReleaseDate(userIO.getInputString("Enter the release date for the DVD: "));
         dvd.setDirectorName(userIO.getInputString("Enter the name of the director for the DVD: "));
